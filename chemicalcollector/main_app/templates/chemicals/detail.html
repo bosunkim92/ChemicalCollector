@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    
+<h1>Chemical Details</h1>
+
+<div class="row">
+    <div class="col s6">
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">{{ chemical.chemcialName }}</span>
+                <p>Common Name: {{ chemical.commonName }}</p>
+                <p>Chemical Formula: {{ chemical.formula }}</p>
+                <p>Molar Mass: {{ chemical.molarMass }}</p>
+                <p>Acidity: {{ chemical.acidity }}</p>
+                <p>Polarity: {{ chemical.polarity }}</p>
+                <p>Solubility: {{ chemical.solubility }}</p>
+            </div>
+            <div class="card-action">
+                <a href="{% url 'chemicals_update' chemical.id %}">Edit</a>
+                <a href="{% url 'chemicals_delete' chemical.id %}">Delete</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col s6">
+        <form action="{% url 'add_utilization' chemical.id %}"method="POST">
+            {% csrf_token %}
+            {{ utilization_form.as_p }}
+            <input type="submit" class='btn' value="Add Utilization">
+        </form>
+        <table class="striped">
+            <thead>
+                <tr><th>Used Date</th><th>Used For</th></tr>
+            </thead>
+            <tbody>
+                
+                {% for utilization in chemical.utilization_set.all %}
+                    <tr>
+                        <td>{{ utilization.date }}</td>
+                        <td>{{ utilization.get_usedFor_display }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<hr>
+<div class="row">
+    <div class="col s6">
+        <h3>{{ chemical.chemicalName }}'s Usecases</h3>
+        
+        {% if chemical.usecases.count %}
+        
+            {% for usecase in chemical.usecases.all %}
+                <div class="card">
+                    <div class="card-content">
+                        <span class="card-title">{{ usecase.name }}</span>
+                        <p>{{ usecase.ingredients }}</p>
+                    </div>
+                    <div class="card-action">
+                        <form action="{% url 'unassoc_usecase' chemical.id usecase.id %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn">Remove</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+                <h5>No Usecase Yet!</h5>    
+        {% endif %}
+    </div>
+    <div class="col s6">
+        <h3>Usecase Lists</h3>
+        
+        {% if usecases.count %}
+            
+            {% for usecase in usecases.all %}
+                <div class="card">
+                    <div class="card-content">
+                        <span class="card-title">{{ usecase.name}}</span>
+                        <p>{{ usecase.ingredients }}</p>
+                    </div>
+                    <div class="card-action">
+                        <form action="{% url 'assoc_usecase' chemical.id usecase.id %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn">Add</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <h5>Please Create More Use Cases Specific to This Chemical</h5>
+            <button type="button" class='btn'><a href="{% url 'usecases_create' %}">GO TO ADD A USECASE</a></button> 
+        {% endif %}
+    </div>
+</div>
+<script>
+    const dateEl = document.getElementById('id_date');
+    M.Datepicker.init(dateEl, {
+        format: 'yyyy-mm-dd',
+        defaultDate: new Date(),
+        setDefaultDate: true,
+        autoClose: true
+    });
+
+    const selectEl = document.getElementById('id_usedFor');
+    M.FormSelect.init(selectEl);
+</script>
+{% endblock content %}
+    

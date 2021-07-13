@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+    
+<h1>Usecase List</h1>
+
+
+{% for usecase in usecase_list %}
+    <a href="{% url 'usecases_detail' usecase.id %}">
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">{{ usecase.name }}</span>
+                <p>Ingredients: {{ usecase.ingredients }}</p>
+            </div>
+        </div>
+    </a>
+{% endfor %}
+    
+
+{% endblock content %}
+    

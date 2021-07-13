@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Chemical List</h1>
+
+
+{% for chemical in chemicals %}
+  <a href="{% url 'detail' chemical.id %}">
+    <div class="card">
+            <div class="card-content">
+                <span class="card-title">{{ chemical.chemicalName }}</span>
+                <p>Common Name: {{ chemical.commonName }}</p>
+                <p>Chemical Formula: {{ chemical.formula }}</p>
+                <p>Molar Mass: {{ chemical.molarMass }}</p>
+                <p>Acidity: {{ chemical.acidity }}</p>
+                <p>Polarity: {{ chemical.polarity }}</p>
+                <p>Solubility: {{ chemical.solubility }}</p>
+            </div>
+    </div>
+  </a>
+{% endfor %}
+    
+{% endblock content %}
+    
